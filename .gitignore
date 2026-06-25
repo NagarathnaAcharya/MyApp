@@ -44,3 +44,5 @@ Pods/
 
 # React Native
 .metro-health-check*
+
+.scannerwork/
