@@ -24,5 +24,8 @@ jobs:
       - name: Check npm Version
         run: npm -v
 
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Print Hello
         run: echo "Hello from GitHub Actions!"
