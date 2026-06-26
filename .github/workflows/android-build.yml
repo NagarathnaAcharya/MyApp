@@ -1,4 +1,4 @@
-name: My First Workflow
+name: React Native Android CI
 
 on:
   push:
