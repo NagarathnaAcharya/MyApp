@@ -48,10 +48,11 @@ jobs:
       - name: Make Gradle Executable
         run: chmod +x android/gradlew
 
-      - name: Build Debug APK
+      - name: Build Release APK and AAB
         run: |
-          cd android
-          ./gradlew assembleDebug
+           cd android
+           ./gradlew assembleRelease
+            ./gradlew bundleRelease
      
 
       - name: Upload APK Artifact
