@@ -69,3 +69,28 @@ jobs:
          tag_name: v1.0.${{ github.run_number }}
          body_path: CHANGELOG.md
          files: android/app/build/outputs/apk/debug/app-debug.apk  
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "✅ Android Build Successful"
+          to: ${{ secrets.EMAIL_RECIPIENT }}
+          from: ${{ secrets.GMAIL_USERNAME }}
+          body: |
+            Hello,
+
+            Your Android build completed successfully.
+
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+
+            The APK has been generated and uploaded to the GitHub Release.
+
+            Regards,
+            GitHub Actions
