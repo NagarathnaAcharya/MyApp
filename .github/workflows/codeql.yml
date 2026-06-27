@@ -1,62 +1,39 @@
-name: React Native Android CI
+name: "CodeQL"
 
 on:
   push:
-    branches:
-      - main
-      
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '30 1 * * 0'
+
 permissions:
-  contents: write
+  actions: read
+  contents: read
+  security-events: write
 
 jobs:
-  hello:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript' ]
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
         with:
-          node-version: 20
+          languages: ${{ matrix.language }}
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
-      - name: Check Java Version
-        run: java -version
-
-      - name: Check Node Version
-        run: node -v
-
-      - name: Check npm Version
-        run: npm -v
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Print Hello
-        run: echo "Hello from GitHub Actions!"
-
-      - name: Make Gradle Executable
-        run: chmod +x android/gradlew
-
-      - name: Build Debug APK
-        run: |
-          cd android
-          ./gradlew assembleDebug
-     
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 90    
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
