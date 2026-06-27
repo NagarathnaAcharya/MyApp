@@ -67,7 +67,6 @@ jobs:
           name: app-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 90
-
       - name: Upload Release APK to Google Drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
@@ -76,7 +75,6 @@ jobs:
           folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
           name: app-release-${{ github.run_number }}.apk
           overwrite: false
-
       - name: Upload Release AAB to Google Drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
@@ -120,12 +118,7 @@ jobs:
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
 
-            Release APK and Android App Bundle (AAB) have been generated.
-            They have been:
-            - Uploaded as GitHub Artifacts
-            - Uploaded to Google Drive
-            - Attached to the GitHub Release
+            Release APK and Android App Bundle (AAB) have been generated and uploaded to the GitHub Release.
 
             Regards,
-            GitHub Actions
-
+            GitHub Actions 
