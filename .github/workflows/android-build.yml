@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
- workflow_dispatch:     
 
 permissions:
   contents: write
@@ -27,15 +26,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-    restore-keys: |
-      ${{ runner.os }}-gradle-
 
       - name: Check Java Version
         run: java -version
@@ -77,6 +67,7 @@ jobs:
           name: app-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 90
+
       - name: Upload Release APK to Google Drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
@@ -85,6 +76,7 @@ jobs:
           folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
           name: app-release-${{ github.run_number }}.apk
           overwrite: false
+
       - name: Upload Release AAB to Google Drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
@@ -116,7 +108,7 @@ jobs:
           secure: true
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          subject: "✅ Android Build Successful"
+          subject: "Android Build Successful"
           to: ${{ secrets.EMAIL_RECIPIENT }}
           from: ${{ secrets.GMAIL_USERNAME }}
           body: |
@@ -128,7 +120,12 @@ jobs:
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
 
-            Release APK and Android App Bundle (AAB) have been generated and uploaded to the GitHub Release.
+            Release APK and Android App Bundle (AAB) have been generated.
+
+            They have been:
+            - Uploaded as GitHub Artifacts
+            - Uploaded to Google Drive
+            - Attached to the GitHub Release
 
             Regards,
-            GitHub Actions 
+            GitHub Actions
