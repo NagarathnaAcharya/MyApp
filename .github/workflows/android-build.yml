@@ -69,23 +69,20 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 90
 
-      - name: Upload Release APK to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.GDRIVE_CREDENTIALS }}
-          filename: android/app/build/outputs/apk/release/app-release.apk
-          folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
-          name: app-release-${{ github.run_number }}.apk
-          overwrite: false
+      - name: Install rclone
+        run: curl https://rclone.org/install.sh | sudo bash
 
-      - name: Upload Release AAB to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.GDRIVE_CREDENTIALS }}
-          filename: android/app/build/outputs/bundle/release/app-release.aab
-          folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
-          name: app-release-${{ github.run_number }}.aab
-          overwrite: false
+      - name: Configure rclone
+        run: |
+          mkdir -p ~/.config/rclone
+          echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
+
+      - name: Upload Release APK to Google Drive
+        run: |
+          rclone copyto android/app/build/outputs/apk/release/app-release.apk \
+            "gdrive:CI-Builds/Android/app-release-${{ github.run_number }}.apk" \
+            --drive-use-trash=false \
+            -v
 
       - name: Generate CHANGELOG
         run: |
