@@ -76,6 +76,13 @@ jobs:
         run: |
           mkdir -p ~/.config/rclone
           echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
+      - name: Verify rclone config
+        run: |
+         echo "Listing remotes..."
+         rclone listremotes
+
+         echo "Showing config..."
+         rclone config show     
 
       - name: Upload Release APK to Google Drive
         run: |
