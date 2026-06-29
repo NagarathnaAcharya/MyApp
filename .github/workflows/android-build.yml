@@ -73,9 +73,12 @@ jobs:
         run: curl https://rclone.org/install.sh | sudo bash
 
       - name: Configure rclone
+        shell: bash
         run: |
           mkdir -p ~/.config/rclone
-          echo "${{ secrets.RCLONE_CONFIG }}" > ~/.config/rclone/rclone.conf
+          cat > ~/.config/rclone/rclone.conf << 'EOF'
+          ${{ secrets.RCLONE_CONFIG }}
+          EOF
       - name: Verify rclone config
         run: |
          echo "Listing remotes..."
